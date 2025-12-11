@@ -1,0 +1,45 @@
+// Fix for playSequence and drawFrame functions
+// Apply these changes to App.jsx
+
+// ISSUE 1: playSequence uses isPlaying state which causes immediate stop
+// SOLUTION: Use local variable 'playing' instead
+
+// Replace line ~887: if (!isPlaying && !recording) break;
+// With: if (!playing) break;
+
+// Add after line ~885 (after setIsRecording):
+let playing = true;
+
+// Replace all instances of:
+// if (!isPlaying && !recording) { resolve(); return; }
+// With:
+// if (!playing) { resolve(); return; }
+
+
+// ISSUE 2: drawFrame calculates progress incorrectly
+// Current (line ~826):
+// progress = audio.currentTime / duration;
+
+// Should be:
+// progress = audio.currentTime / audio.duration;
+
+// This fixes camera effects not working
+
+
+// ISSUE 3: Add stop function to allow manual stopping
+// Add this function after playSequence:
+
+const stopPlayback = () => {
+  setIsPlaying(false);
+  // Stop all audio
+  Object.values(sceneAudiosRef.current).forEach(audio => {
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  });
+  // Cancel animation frame
+  if (requestRef.current) {
+    cancelAnimationFrame(requestRef.current);
+  }
+};
