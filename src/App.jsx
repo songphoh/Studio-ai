@@ -206,222 +206,222 @@ const StudioMulti = ({
             </div>
           ))}
         </div>
-      </div>
-      {scenes.length > 0 && (
-        <div className="p-3 border-t border-gray-800/50 bg-gradient-to-t from-[#0F1115] to-transparent">
-          <button
-            onClick={generateAllScenes}
-            className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-green-600/30 text-sm"
-          >
-            <Zap size={16} /> Generate ALL Scenes
-          </button>
-        </div>
-      )}
-    </div>
 
-      {/* CENTER: PREVIEW */ }
-  <div className="flex-1 flex flex-col min-w-0 bg-gradient-to-b from-black via-gray-950 to-black">
-    <div className="flex-1 flex items-center justify-center relative overflow-hidden p-8">
-      <div className="relative shadow-2xl rounded-2xl overflow-hidden border-2 border-gray-800/50 ring-4 ring-gray-900/50">
-        {/* Canvas for drawing/recording */}
-        <canvas ref={canvasRef} width={1080} height={1920} className="h-[650px] w-auto bg-gradient-to-br from-[#1A1D24] to-[#0A0D12]" />
-
-
-        {/* Logo Overlay */}
-        {logoUrl && (
-          <div className="absolute top-4 right-4 w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shadow-2xl backdrop-blur-sm bg-white/10">
-            <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+        {scenes.length > 0 && (
+          <div className="p-3 border-t border-gray-800/50 bg-gradient-to-t from-[#0F1115] to-transparent">
+            <button
+              onClick={generateAllScenes}
+              className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-green-600/30 text-sm"
+            >
+              <Zap size={16} /> Generate ALL Scenes
+            </button>
           </div>
         )}
+      </div>
 
-        {!isPlaying && scenes.length > 0 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-black/60 via-black/50 to-black/70 cursor-pointer backdrop-blur-sm" onClick={() => playSequence(false)}>
-            <div className="p-6 bg-gradient-to-br from-blue-600 to-purple-600 backdrop-blur rounded-full hover:scale-110 transition-all shadow-2xl shadow-blue-500/50">
-              <Play fill="white" size={40} />
+      {/* CENTER: PREVIEW */}
+      <div className="flex-1 flex flex-col min-w-0 bg-gradient-to-b from-black via-gray-950 to-black">
+        <div className="flex-1 flex items-center justify-center relative overflow-hidden p-8">
+          <div className="relative shadow-2xl rounded-2xl overflow-hidden border-2 border-gray-800/50 ring-4 ring-gray-900/50">
+            {/* Canvas for drawing/recording */}
+            <canvas ref={canvasRef} width={1080} height={1920} className="h-[650px] w-auto bg-gradient-to-br from-[#1A1D24] to-[#0A0D12]" />
+
+
+            {/* Logo Overlay */}
+            {logoUrl && (
+              <div className="absolute top-4 right-4 w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 shadow-2xl backdrop-blur-sm bg-white/10">
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+              </div>
+            )}
+
+            {!isPlaying && scenes.length > 0 && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-black/60 via-black/50 to-black/70 cursor-pointer backdrop-blur-sm" onClick={() => playSequence(false)}>
+                <div className="p-6 bg-gradient-to-br from-blue-600 to-purple-600 backdrop-blur rounded-full hover:scale-110 transition-all shadow-2xl shadow-blue-500/50">
+                  <Play fill="white" size={40} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* TIMELINE CONTROLS */}
+        <div className="h-20 bg-gradient-to-r from-[#0F1115] via-[#1A1D24] to-[#0F1115] border-t border-gray-800/50 px-6 flex items-center justify-between shadow-2xl">
+          <div className="flex items-center gap-5">
+            <button
+              onClick={() => playSequence(false)}
+              disabled={isPlaying}
+              className="bg-gradient-to-br from-white to-gray-200 text-black p-3 rounded-full hover:shadow-lg hover:shadow-white/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isPlaying ? <Pause size={18} /> : <Play fill="black" size={18} />}
+            </button>
+            <div className="flex flex-col">
+              <p className="text-gray-500 text-[10px] uppercase font-bold tracking-wider">Total Duration</p>
+              <p className="text-white font-mono text-lg font-bold">{scenes.reduce((acc, s) => acc + (s.duration || 10), 0).toFixed(0)}s</p>
             </div>
           </div>
-        )}
-      </div>
-    </div>
 
-    {/* TIMELINE CONTROLS */}
-    <div className="h-20 bg-gradient-to-r from-[#0F1115] via-[#1A1D24] to-[#0F1115] border-t border-gray-800/50 px-6 flex items-center justify-between shadow-2xl">
-      <div className="flex items-center gap-5">
-        <button
-          onClick={() => playSequence(false)}
-          disabled={isPlaying}
-          className="bg-gradient-to-br from-white to-gray-200 text-black p-3 rounded-full hover:shadow-lg hover:shadow-white/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isPlaying ? <Pause size={18} /> : <Play fill="black" size={18} />}
-        </button>
-        <div className="flex flex-col">
-          <p className="text-gray-500 text-[10px] uppercase font-bold tracking-wider">Total Duration</p>
-          <p className="text-white font-mono text-lg font-bold">{scenes.reduce((acc, s) => acc + (s.duration || 10), 0).toFixed(0)}s</p>
-        </div>
-      </div>
-
-      {!isRecording ? (
-        <button
-          onClick={startRecording}
-          disabled={scenes.some(s => s.status !== 'done') || scenes.length === 0}
-          className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all text-sm ${scenes.some(s => s.status !== 'done') || scenes.length === 0
-            ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-            : 'bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white shadow-lg shadow-red-600/30'
-            }`}
-        >
-          <Video size={18} /> Record Final Video
-        </button>
-      ) : (
-        <button
-          onClick={stopRecording}
-          className="px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all bg-gradient-to-r from-red-600 to-red-700 text-white animate-pulse hover:from-red-500 hover:to-red-600 shadow-lg shadow-red-600/50 text-sm"
-        >
-          <StopCircle size={18} /> Stop Recording
-        </button>
-      )}
-    </div>
-  </div>
-
-  {/* RIGHT: SCENE INSPECTOR */ }
-  <div className="w-96 bg-gradient-to-b from-[#0F1115] to-[#0A0D12] border-l border-gray-800/50 flex flex-col overflow-y-auto shadow-2xl">
-    <div className="p-5 border-b border-gray-800/50 bg-gradient-to-r from-[#1A1D24] to-[#0F1115]">
-      <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-        <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-          <Edit3 size={14} className="text-white" />
-        </div>
-        Scene Editor
-      </h3>
-    </div>
-
-    {activeScene ? (
-      <div className="p-5 space-y-6">
-        {/* 1. SCRIPT */}
-        <div className="space-y-3">
-          <label className="text-xs uppercase font-bold text-gray-400 flex items-center justify-between">
-            <span className="flex items-center gap-2">
-              <Type size={12} className="text-purple-400" />
-              Script & Voiceover
-            </span>
+          {!isRecording ? (
             <button
-              onClick={() => setShowSubtitles(!showSubtitles)}
-              className={`text-[10px] px-3 py-1 rounded-full font-bold transition-all ${showSubtitles
-                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30'
-                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              onClick={startRecording}
+              disabled={scenes.some(s => s.status !== 'done') || scenes.length === 0}
+              className={`px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all text-sm ${scenes.some(s => s.status !== 'done') || scenes.length === 0
+                ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white shadow-lg shadow-red-600/30'
                 }`}
             >
-              {showSubtitles ? '✓ SUBTITLES ON' : 'SUBTITLES OFF'}
+              <Video size={18} /> Record Final Video
             </button>
-          </label>
-          <textarea
-            value={activeScene.storyText}
-            onChange={(e) => updateSceneData(activeSceneIndex, 'storyText', e.target.value)}
-            className="w-full bg-[#0A0D12] border border-gray-700/50 rounded-xl p-4 text-sm text-white h-28 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 resize-none transition-all"
-            placeholder="Enter scene narration..."
-          />
-          <button
-            onClick={() => generateSceneAssets(activeSceneIndex)}
-            className="w-full py-2.5 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 border border-gray-600/50 rounded-xl text-xs text-gray-300 font-semibold flex items-center justify-center gap-2 transition-all"
-          >
-            <RefreshCw size={13} /> Regenerate Audio
-          </button>
-
-          {/* Subtitle Words Per Line Control */}
-          {showSubtitles && (
-            <div className="space-y-2 pt-2 border-t border-gray-700/30">
-              <label className="text-[10px] uppercase font-bold text-gray-500 flex items-center justify-between">
-                <span>คำต่อบรรทัด</span>
-                <span className="text-purple-400">{subtitleWordsPerLine} คำ</span>
-              </label>
-              <input
-                type="range"
-                min="3"
-                max="12"
-                value={subtitleWordsPerLine}
-                onChange={(e) => setSubtitleWordsPerLine(parseInt(e.target.value))}
-                className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
-              />
-              <div className="flex justify-between text-[9px] text-gray-600">
-                <span>สั้น (3)</span>
-                <span>ยาว (12)</span>
-              </div>
-            </div>
+          ) : (
+            <button
+              onClick={stopRecording}
+              className="px-8 py-3 rounded-xl font-bold flex items-center gap-3 transition-all bg-gradient-to-r from-red-600 to-red-700 text-white animate-pulse hover:from-red-500 hover:to-red-600 shadow-lg shadow-red-600/50 text-sm"
+            >
+              <StopCircle size={18} /> Stop Recording
+            </button>
           )}
         </div>
+      </div>
 
-        {/* 2. VISUALS */}
-        <div className="space-y-3">
-          <label className="text-xs uppercase font-bold text-gray-400 flex items-center gap-2">
-            <ImageIcon size={12} className="text-blue-400" />
-            Image Prompt
-          </label>
-          <textarea
-            value={activeScene.imagePrompt}
-            onChange={(e) => updateSceneData(activeSceneIndex, 'imagePrompt', e.target.value)}
-            className="w-full bg-[#0A0D12] border border-gray-700/50 rounded-xl p-4 text-xs text-gray-400 h-28 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none transition-all"
-            placeholder="Describe the visual scene..."
-          />
-          <button
-            onClick={() => generateSceneAssets(activeSceneIndex)}
-            className="w-full py-2.5 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 border border-gray-600/50 rounded-xl text-xs text-gray-300 font-semibold flex items-center justify-center gap-2 transition-all"
-          >
-            <ImageIcon size={13} /> Regenerate Image
-          </button>
+      {/* RIGHT: SCENE INSPECTOR */}
+      <div className="w-96 bg-gradient-to-b from-[#0F1115] to-[#0A0D12] border-l border-gray-800/50 flex flex-col overflow-y-auto shadow-2xl">
+        <div className="p-5 border-b border-gray-800/50 bg-gradient-to-r from-[#1A1D24] to-[#0F1115]">
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+            <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+              <Edit3 size={14} className="text-white" />
+            </div>
+            Scene Editor
+          </h3>
         </div>
 
-        {/* 3. EFFECTS */}
-        <div className="space-y-3">
-          <label className="text-xs uppercase font-bold text-gray-400 flex items-center gap-2">
-            <Move size={12} className="text-green-400" />
-            Camera & Effects
-          </label>
-
-          {/* Camera Movements */}
-          <div className="space-y-2">
-            <p className="text-[10px] text-gray-500 font-semibold">CAMERA MOVEMENTS</p>
-            <div className="grid grid-cols-2 gap-2">
-              {['none', 'zoom-in', 'zoom-out', 'pan-left', 'pan-right', 'pan-up', 'pan-down', 'ken-burns'].map(effect => (
+        {activeScene ? (
+          <div className="p-5 space-y-6">
+            {/* 1. SCRIPT */}
+            <div className="space-y-3">
+              <label className="text-xs uppercase font-bold text-gray-400 flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <Type size={12} className="text-purple-400" />
+                  Script & Voiceover
+                </span>
                 <button
-                  key={effect}
-                  onClick={() => updateSceneData(activeSceneIndex, 'effect', effect)}
-                  className={`py-2.5 px-2 rounded-lg text-[10px] font-bold border transition-all ${activeScene.effect === effect
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 border-blue-500 text-white shadow-lg shadow-blue-500/20'
-                    : 'bg-[#1A1D24] border-gray-700/50 text-gray-400 hover:border-gray-500 hover:text-white'
+                  onClick={() => setShowSubtitles(!showSubtitles)}
+                  className={`text-[10px] px-3 py-1 rounded-full font-bold transition-all ${showSubtitles
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                     }`}
                 >
-                  {effect.replace(/-/g, ' ').toUpperCase()}
+                  {showSubtitles ? '✓ SUBTITLES ON' : 'SUBTITLES OFF'}
                 </button>
-              ))}
-            </div>
-          </div>
+              </label>
+              <textarea
+                value={activeScene.storyText}
+                onChange={(e) => updateSceneData(activeSceneIndex, 'storyText', e.target.value)}
+                className="w-full bg-[#0A0D12] border border-gray-700/50 rounded-xl p-4 text-sm text-white h-28 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 resize-none transition-all"
+                placeholder="Enter scene narration..."
+              />
+              <button
+                onClick={() => generateSceneAssets(activeSceneIndex)}
+                className="w-full py-2.5 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 border border-gray-600/50 rounded-xl text-xs text-gray-300 font-semibold flex items-center justify-center gap-2 transition-all"
+              >
+                <RefreshCw size={13} /> Regenerate Audio
+              </button>
 
-          {/* Special Effects */}
-          <div className="space-y-2">
-            <p className="text-[10px] text-gray-500 font-semibold">SPECIAL EFFECTS</p>
-            <div className="grid grid-cols-2 gap-2">
-              {['fade', 'shake', 'dust', 'snow', 'rain', 'lightning'].map(effect => (
-                <button
-                  key={effect}
-                  onClick={() => updateSceneData(activeSceneIndex, 'effect', effect)}
-                  className={`py-2.5 px-2 rounded-lg text-[10px] font-bold border transition-all ${activeScene.effect === effect
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 border-purple-500 text-white shadow-lg shadow-purple-500/20'
-                    : 'bg-[#1A1D24] border-gray-700/50 text-gray-400 hover:border-gray-500 hover:text-white'
-                    }`}
-                >
-                  {effect.toUpperCase()}
-                </button>
-              ))}
+              {/* Subtitle Words Per Line Control */}
+              {showSubtitles && (
+                <div className="space-y-2 pt-2 border-t border-gray-700/30">
+                  <label className="text-[10px] uppercase font-bold text-gray-500 flex items-center justify-between">
+                    <span>คำต่อบรรทัด</span>
+                    <span className="text-purple-400">{subtitleWordsPerLine} คำ</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="3"
+                    max="12"
+                    value={subtitleWordsPerLine}
+                    onChange={(e) => setSubtitleWordsPerLine(parseInt(e.target.value))}
+                    className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                  />
+                  <div className="flex justify-between text-[9px] text-gray-600">
+                    <span>สั้น (3)</span>
+                    <span>ยาว (12)</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 2. VISUALS */}
+            <div className="space-y-3">
+              <label className="text-xs uppercase font-bold text-gray-400 flex items-center gap-2">
+                <ImageIcon size={12} className="text-blue-400" />
+                Image Prompt
+              </label>
+              <textarea
+                value={activeScene.imagePrompt}
+                onChange={(e) => updateSceneData(activeSceneIndex, 'imagePrompt', e.target.value)}
+                className="w-full bg-[#0A0D12] border border-gray-700/50 rounded-xl p-4 text-xs text-gray-400 h-28 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none transition-all"
+                placeholder="Describe the visual scene..."
+              />
+              <button
+                onClick={() => generateSceneAssets(activeSceneIndex)}
+                className="w-full py-2.5 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 border border-gray-600/50 rounded-xl text-xs text-gray-300 font-semibold flex items-center justify-center gap-2 transition-all"
+              >
+                <ImageIcon size={13} /> Regenerate Image
+              </button>
+            </div>
+
+            {/* 3. EFFECTS */}
+            <div className="space-y-3">
+              <label className="text-xs uppercase font-bold text-gray-400 flex items-center gap-2">
+                <Move size={12} className="text-green-400" />
+                Camera & Effects
+              </label>
+
+              {/* Camera Movements */}
+              <div className="space-y-2">
+                <p className="text-[10px] text-gray-500 font-semibold">CAMERA MOVEMENTS</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {['none', 'zoom-in', 'zoom-out', 'pan-left', 'pan-right', 'pan-up', 'pan-down', 'ken-burns'].map(effect => (
+                    <button
+                      key={effect}
+                      onClick={() => updateSceneData(activeSceneIndex, 'effect', effect)}
+                      className={`py-2.5 px-2 rounded-lg text-[10px] font-bold border transition-all ${activeScene.effect === effect
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 border-blue-500 text-white shadow-lg shadow-blue-500/20'
+                        : 'bg-[#1A1D24] border-gray-700/50 text-gray-400 hover:border-gray-500 hover:text-white'
+                        }`}
+                    >
+                      {effect.replace(/-/g, ' ').toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Special Effects */}
+              <div className="space-y-2">
+                <p className="text-[10px] text-gray-500 font-semibold">SPECIAL EFFECTS</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {['fade', 'shake', 'dust', 'snow', 'rain', 'lightning'].map(effect => (
+                    <button
+                      key={effect}
+                      onClick={() => updateSceneData(activeSceneIndex, 'effect', effect)}
+                      className={`py-2.5 px-2 rounded-lg text-[10px] font-bold border transition-all ${activeScene.effect === effect
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 border-purple-500 text-white shadow-lg shadow-purple-500/20'
+                        : 'bg-[#1A1D24] border-gray-700/50 text-gray-400 hover:border-gray-500 hover:text-white'
+                        }`}
+                    >
+                      {effect.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center text-gray-500 text-sm p-8 text-center">
+            <Edit3 size={48} className="mb-4 opacity-20" />
+            <p className="text-gray-400">Select a scene from the storyboard</p>
+            <p className="text-xs text-gray-600 mt-2">to edit its details</p>
+          </div>
+        )}
       </div>
-    ) : (
-      <div className="flex-1 flex flex-col items-center justify-center text-gray-500 text-sm p-8 text-center">
-        <Edit3 size={48} className="mb-4 opacity-20" />
-        <p className="text-gray-400">Select a scene from the storyboard</p>
-        <p className="text-xs text-gray-600 mt-2">to edit its details</p>
-      </div>
-    )}
-  </div>
     </div >
   );
 };
