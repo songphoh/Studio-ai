@@ -868,14 +868,23 @@ const App = () => {
       ctx.font = 'bold 50px "Kanit", sans-serif';
 
       const text = currentScene.storyText;
-      // For demo, just showing full text or simple split if too long
-      // Real production needs a line-break function here
+      const words = text.split(' ');
+      const lines = [];
+      const wordsPerLine = subtitleWordsPerLine || 6;
+
+      for (let i = 0; i < words.length; i += wordsPerLine) {
+        lines.push(words.slice(i, i + wordsPerLine).join(' '));
+      }
 
       ctx.lineWidth = 8;
       ctx.strokeStyle = 'black';
-      ctx.strokeText(text, width / 2, height - 150);
       ctx.fillStyle = 'white';
-      ctx.fillText(text, width / 2, height - 150);
+
+      lines.reverse().forEach((line, index) => {
+        const y = height - 150 - (index * 60); // Stack upwards
+        ctx.strokeText(line, width / 2, y);
+        ctx.fillText(line, width / 2, y);
+      });
     }
   };
 
