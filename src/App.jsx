@@ -578,6 +578,11 @@ const App = () => {
     try {
       if (!n8nUrl || !n8nUrl.startsWith('http')) throw new Error("Invalid n8n URL");
 
+      console.log(`🚀 Sending to n8n for scene ${index}:`, {
+        prompt: scene.imagePrompt.substring(0, 50) + '...',
+        overrideText: scene.storyText.substring(0, 30) + '...'
+      });
+
       const response = await fetch(n8nUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -587,8 +592,31 @@ const App = () => {
         })
       });
 
-      if (!response.ok) throw new Error("n8n Error");
-      const result = await response.json();
+      // Get response text first for better error handling
+      const responseText = await response.text();
+
+      if (!response.ok) {
+        throw new Error(`n8n Server Error (${response.status}): ${responseText.substring(0, 200)}`);
+      }
+
+      if (!responseText) {
+        throw new Error("n8n returned empty response");
+      }
+
+      // Parse JSON with error handling (from index2.html pattern)
+      let rawJson;
+      try {
+        rawJson = JSON.parse(responseText);
+      } catch (e) {
+        throw new Error(`n8n did not return valid JSON: ${responseText.substring(0, 100)}...`);
+      }
+
+      // Handle both Array and Object responses (from index2.html lines 412-417)
+      let result = Array.isArray(rawJson) ? rawJson[0] : rawJson;
+
+      if (!result || (!result.imageUrl && !result.audioUrl)) {
+        throw new Error("n8n response missing imageUrl and audioUrl");
+      }
 
       // DEBUG: Log the response from n8n
       console.log("✅ n8n Response:", result);
@@ -613,10 +641,20 @@ const App = () => {
         });
 
         if (retryResponse.ok) {
-          result = await retryResponse.json();
+          const retryText = await retryResponse.text();
+          const retryJson = JSON.parse(retryText);
+          result = Array.isArray(retryJson) ? retryJson[0] : retryJson;
           console.log(`🔄 Retry ${retries + 1} Response:`, result);
         }
         retries++;
+      }
+
+      // Add timestamp to prevent caching (from index2.html lines 430-432)
+      const timestamp = new Date().getTime();
+      let finalAudioUrl = result.audioUrl;
+      if (finalAudioUrl && !finalAudioUrl.startsWith('data:')) {
+        const separator = finalAudioUrl.includes('?') ? '&' : '?';
+        finalAudioUrl = `${finalAudioUrl}${separator}nocache=${timestamp}`;
       }
 
       // Use functional setState to get latest state
@@ -625,16 +663,18 @@ const App = () => {
         updatedScenes[index] = {
           ...updatedScenes[index],
           imageUrl: result.imageUrl,
-          audioUrl: result.audioUrl,
+          audioUrl: finalAudioUrl,
           status: 'done'
         };
         return updatedScenes;
       });
 
-      preloadSceneAssets(index, result.imageUrl, result.audioUrl);
+      preloadSceneAssets(index, result.imageUrl, finalAudioUrl);
 
     } catch (error) {
-      console.warn("Asset Gen Failed (Using Mock):", error);
+      console.error("❌ Asset Generation Failed:", error);
+      console.error("Scene Index:", index);
+      console.error("Error Details:", error.message);
 
       // FALLBACK TO MOCK DATA (Simulate delay)
       await new Promise(r => setTimeout(r, 1500));
@@ -690,8 +730,21 @@ const App = () => {
     }
     if (audioUrl) {
       console.log(`🔊 Loading audio for scene ${index}:`, audioUrl.substring(0, 50) + '...');
-      const audio = new Audio(audioUrl);
+
+      // Create HTML5 audio element with timestamp to prevent caching
+      const audio = document.createElement('audio');
       audio.crossOrigin = "anonymous";
+
+      // Create source element with timestamp parameter
+      const source = document.createElement('source');
+      const urlWithTimestamp = audioUrl.includes('?')
+        ? `${audioUrl}&t=${Date.now()}`
+        : `${audioUrl}?t=${Date.now()}`;
+      source.src = urlWithTimestamp;
+      source.type = "audio/mpeg";
+
+      audio.appendChild(source);
+
       audio.addEventListener('loadedmetadata', () => {
         console.log(`✅ Audio loaded for scene ${index}, duration: ${audio.duration}s`);
         setScenes(prev => {
@@ -700,11 +753,16 @@ const App = () => {
           return copy;
         });
       });
+
       // Error Handling for Audio
       audio.addEventListener('error', (e) => {
         console.error(`❌ Audio load error scene ${index}:`, e);
-        console.error('Audio URL:', audioUrl.substring(0, 100));
+        console.error('Audio URL:', urlWithTimestamp.substring(0, 100));
       });
+
+      // Load the audio
+      audio.load();
+
       sceneAudiosRef.current[index] = audio;
     }
   };
